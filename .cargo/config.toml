@@ -1,0 +1,15 @@
+# The tests share process-wide counters.
+#
+# Several files in `tests/` keep their instruments in `static` values - a count
+# of releases, of allocation calls, of shutdown hooks - and a test that resets
+# one and then reads it means the test binary is one conversation about that
+# counter. The test harness runs a file's tests on several threads by default, so
+# two of them write the same counter and the readings are whichever test ran
+# second.
+#
+# The suite is therefore run one test at a time, which is what CI does and what
+# the README says. Setting it here makes the plain `cargo test` answer the same
+# question: the value is read by libtest, and `--test-threads <n>` on the command
+# line still overrides it for a run that wants the threads.
+[env]
+RUST_TEST_THREADS = "1"

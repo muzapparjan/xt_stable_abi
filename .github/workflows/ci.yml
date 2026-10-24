@@ -1,0 +1,121 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      # Building first puts the plugin artifacts in place for the end-to-end
+      # test, which needs them as separate dynamic libraries.
+      - run: cargo build --workspace
+      # The deliverable is a dynamic library and nothing else. If the crate that
+      # a host loads ever declares `rlib` again, it would also produce metadata
+      # that carries source-level information, and an archive of the build
+      # directory would hand that out. This step fails instead.
+      - name: The deliverable produces no library
+        shell: bash
+        run: |
+          found=$(find target \( -name 'libxt_kernel_dynlib.rlib' -o -name 'xt_kernel_dynlib.rlib' \) -print -quit)
+          if [ -n "$found" ]; then
+            echo "the deliverable produced a library: $found"
+            exit 1
+          fi
+          echo "ok: xt_kernel_dynlib produced no library"
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo doc --no-deps --workspace
+        env:
+          RUSTDOCFLAGS: -D warnings
+      # One test at a time: the end-to-end test loads dynamic libraries and the
+      # suite keeps its allocator counters in static values.
+      - run: cargo test --workspace -- --test-threads=1
+      # The demo programs are the end-to-end shapes: one uses the kernel
+      # directly, one links the boundary in, one loads it as a library built
+      # above. Each calls every published method and exits non-zero on a
+      # mismatch.
+      - run: cargo run -p xt_kernel_native
+      - run: cargo run -p xt_kernel_static
+      - run: cargo run -p xt_kernel_app
+
+  miri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: miri
+      - name: Full suite
+        run: cargo miri test -- --test-threads=1
+        env:
+          # The fixtures keep allocator counters in `'static` values, and the
+          # table cache is process-wide; neither is a leak in the values under
+          # test. The step below runs the rest with leak checking on.
+          #
+          # Strict provenance is on: the layouts here are addresses and lengths,
+          # and a pointer rebuilt from an integer answers a different question
+          # than one that carries where it came from. The defects that mode
+          # found were invisible to the default one.
+          MIRIFLAGS: -Zmiri-ignore-leaks -Zmiri-strict-provenance
+      - name: Leak checking
+        run: >
+          cargo miri test
+          --test checked_raw --test editing --test handles --test hostile
+          --test layout --test primitives --test status --test tuples_arrays
+          --test types --test unwind --test versions --test enumeration
+          --test clone
+          -- --test-threads=1
+        env:
+          MIRIFLAGS: -Zmiri-strict-provenance
+
+  no_std:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: clippy
+      # Checked on a target without `std` pieces to fall back on: on a host
+      # target a stray `std` path would still resolve and hide the breakage.
+      #
+      # The crate names the surface a plain-data type has to carry in both
+      # builds, so a constructor that only exists with the feature on fails
+      # here rather than at the caller that needed it.
+      - run: >
+          cargo clippy -p xt_stable_abi --no-default-features
+          --target wasm32-unknown-unknown -- -D warnings
+      - run: >
+          cargo check -p xt_stable_abi --no-default-features
+          --target wasm32-unknown-unknown
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.90
+      - run: cargo check --workspace --all-targets
+
+  widths:
+    # The table records every field width explicitly, so the boundary has to
+    # behave the same when a pointer is four bytes. Building first puts the
+    # plugin artifacts in place for the end-to-end test, as in the job above.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: i686-pc-windows-msvc
+      - run: cargo build --workspace --target i686-pc-windows-msvc
+      - run: cargo test -p xt_stable_abi --target i686-pc-windows-msvc -- --test-threads=1
+      - run: cargo run -p xt_kernel_native --target i686-pc-windows-msvc
+      - run: cargo run -p xt_kernel_app --target i686-pc-windows-msvc

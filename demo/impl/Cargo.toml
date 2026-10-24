@@ -1,0 +1,14 @@
+[package]
+name = "xt_kernel_impl"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The xt_kernel implementation of the published surface, as a library"
+publish = false
+
+[lib]
+name = "xt_kernel_impl"
+
+[dependencies]
+xt_kernel = { path = "../kernel" }
+xt_kernel_api = { path = "../api" }

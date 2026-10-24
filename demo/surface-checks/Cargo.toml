@@ -1,0 +1,11 @@
+[package]
+name = "xt_surface_checks"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The scenario list both boundary programs run, written against the published surface only"
+publish = false
+
+[dependencies]
+xt_kernel_api = { path = "../api" }
+xt_bench = { path = "../bench" }

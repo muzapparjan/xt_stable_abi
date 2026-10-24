@@ -1,0 +1,20 @@
+[package]
+name = "xt_kernel_static"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The same surface as xt_kernel_app, linked into the binary instead of loaded"
+publish = false
+
+[[bin]]
+name = "xt_kernel_static"
+path = "src/main.rs"
+
+[dependencies]
+# The implementation as a library: this program runs the same entry point the
+# dynamic program looks up at run time, without a library file in between.
+xt_kernel_impl = { path = "../impl" }
+# The published declarations are what the entry point speaks in.
+xt_kernel_api = { path = "../api" }
+xt_bench = { path = "../bench" }
+xt_surface_checks = { path = "../surface-checks" }

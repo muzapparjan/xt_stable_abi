@@ -1,0 +1,13 @@
+[package]
+name = "xt_kernel_api"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The published surface of xt_kernel: declarations a host links against, without the kernel behind them"
+publish = false
+
+[dependencies]
+xt_stable_abi = { path = "../.." }
+
+[lib]
+name = "xt_kernel_api"

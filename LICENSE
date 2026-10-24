@@ -1,0 +1,54 @@
+xt_stable_abi License
+=====================
+
+Copyright (c) Muzappar. All rights reserved.
+
+This Software (the "Software") is authored by Muzappar and the repository that
+contains it is owned by Muzappar.
+
+This License restricts what may be distributed. It does not restrict reading
+the Software, nor writing your own implementation from what you learn by
+reading it: an implementation you write yourself is your own work, and a copy
+you keep to yourself is not distributed.
+
+1. Use Outside the XT Engine
+
+   Unless expressly authorized in writing by the author, any use of the
+   Software outside the XT Engine must be non-profit and must not serve a
+   profit-making purpose. This includes, without limitation, any commercial
+   use or any use that benefits a commercial activity, whether by an
+   individual, a company, or an organization. Students, teachers, and
+   self-learners may use the Software freely so long as they do not profit
+   from it or use it in service of profit.
+
+2. Use Within the XT Engine
+
+   The Software is a component of the XT Engine. Users of the XT Engine may
+   freely use, free of charge, all functionality of the Software within the
+   Engine, without additional permission. These rights are granted by, and are
+   included in, the End User License Agreement (EULA) of the XT Engine. Use
+   within the XT Engine is permitted without any restriction under this
+   License.
+
+3. No Redistribution or Modification
+
+   You may not distribute copies of the Software, nor modify and redistribute
+   the modified form, for any purpose. The author does not accept community
+   modifications of the Software; there is no need or space for such
+   modification. If you have a need that the Software does not cover, raise it
+   in the XT Engine community and the author will consider extending the
+   Software.
+
+4. Distribution
+
+   This Software is not published to crates.io or any other public registry.
+   It is distributed solely as part of, and together with, the XT Engine.
+
+5. Disclaimer of Warranty and Limitation of Liability
+
+   The Software is provided "AS IS", without warranty of any kind, express or
+   implied, including but not limited to the warranties of merchantability,
+   fitness for a particular purpose and noninfringement. In no event shall the
+   author be liable for any claim, damages or other liability, whether in an
+   action of contract, tort or otherwise, arising from, out of or in
+   connection with the Software or the use or other dealings in the Software.

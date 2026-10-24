@@ -1,0 +1,17 @@
+[package]
+name = "xt_kernel_native"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The reference program: uses xt_kernel directly, with no boundary in the way"
+publish = false
+
+[[bin]]
+name = "xt_kernel_native"
+path = "src/main.rs"
+
+[dependencies]
+# The kernel and nothing else: this program is the baseline the two boundary
+# programs are compared against.
+xt_kernel = { path = "../kernel" }
+xt_bench = { path = "../bench" }

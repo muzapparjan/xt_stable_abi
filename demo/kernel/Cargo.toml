@@ -1,0 +1,7 @@
+[package]
+name = "xt_kernel"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "A small text-analysis kernel with no knowledge of any ABI: the library an API crate is designed from"
+publish = false

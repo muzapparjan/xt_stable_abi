@@ -1,0 +1,11 @@
+[package]
+name = "xt_bench"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The workload and the reporting the three comparison programs share"
+publish = false
+
+[dependencies]
+# Deliberately empty: this crate must not be able to reach the kernel or the
+# boundary, so the three programs can only compare through values.

@@ -1,0 +1,18 @@
+[package]
+name = "xt_kernel_app"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "A program that uses xt_kernel through xt_kernel_api and a dynamic library"
+publish = false
+
+[[bin]]
+name = "xt_kernel_app"
+path = "src/main.rs"
+
+[dependencies]
+# The API crate is the only thing the kernel's implementation reaches this program
+# through: the library is a file this program opens at run time.
+xt_kernel_api = { path = "../api" }
+xt_bench = { path = "../bench" }
+xt_surface_checks = { path = "../surface-checks" }

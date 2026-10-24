@@ -1,0 +1,18 @@
+[package]
+name = "xt_kernel_dynlib"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "The dynamic library a host loads: exports two names, implements nothing"
+publish = false
+
+[lib]
+name = "xt_kernel_dynlib"
+# A deliverable. This crate must not also produce an `rlib`: that library's
+# metadata holds source-level information, so an accidental archive of the build
+# directory would hand out the implementation.
+crate-type = ["cdylib"]
+
+[dependencies]
+xt_kernel_impl = { path = "../impl" }
+xt_kernel_api = { path = "../api" }

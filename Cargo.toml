@@ -1,0 +1,41 @@
+[package]
+name = "xt_stable_abi"
+version = "1.0.0"
+edition = "2024"
+# Verified with 1.90.0 and 1.97.1. Older toolchains are not supported.
+rust-version = "1.90"
+description = "Explicit-layout types, allocator-carrying ownership and generated virtual tables for exchanging values between independently built Rust binaries"
+keywords = ["abi", "ffi", "plugin", "repr-c", "stable"]
+categories = ["development-tools::ffi"]
+# The terms are not an SPDX licence, so Cargo is pointed at the file. Clause 4 of
+# that file forbids publishing to a registry, which is what `publish = false`
+# states.
+license-file = "LICENSE"
+publish = false
+
+[workspace]
+members = [
+    ".",
+    "plugins/abi_plugin",
+    "plugins/legacy_plugin",
+    "demo/bench",
+    "demo/kernel",
+    "demo/api",
+    "demo/surface-checks",
+    "demo/impl",
+    "demo/dynlib",
+    "demo/app",
+    "demo/static",
+    "demo/native",
+]
+
+[features]
+default = ["std"]
+# Names, paths and clocks wrap the standard library's own types; the panic
+# containment in `stable_object_guarded!` needs `catch_unwind`. A type that is
+# only plain data - `StableDuration` is the one that comes up - carries its whole
+# surface without this feature, and the crate names that surface where it is
+# built so a missing constructor fails the `no_std` build rather than a caller.
+std = []
+
+[dependencies]
